@@ -35,3 +35,33 @@ jobs:
           echo "Docker image successfully pushed:"
           echo "  ${{ secrets.DOCKER_USERNAME }}/fast_api:${{ github.sha }}"
           echo "==========================================="
+      
+      - name: Checkout deploy repository
+        uses: actions/checkout@v4
+        with:
+          repository: VMuthulakshmi/fast_api_deploy
+          token: ${{ secrets.GH_PAT }}
+          path: deploy-repo
+
+      - name: Update image tag in deployment.yaml
+        run: |
+          sed -i "s|\(image: .*/fast_api:\).*|\1${{ github.sha }}|" fast_api_deploy/fast_api_deployment.yaml
+
+      - name: Raise PR to deploy repository
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          cd fast_api_deploy
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          BRANCH="update-image-${{ github.sha }}"
+          git checkout -b $BRANCH
+          git add fast_api_deployment.yaml
+          git commit -m "chore: update Fast API service image to ${{ github.sha }}"
+          git push origin $BRANCH
+          gh pr create \
+            --repo VMuthulakshmi/fast_api_deploy \
+            --base main \
+            --head $BRANCH \
+            --title "chore: update Fast API service image to ${{ github.sha }}" \
+            --body "Automated PR: update Fast API container image to \`${{ secrets.DOCKER_USERNAME }}/fast_api:${{ github.sha }}\`"
