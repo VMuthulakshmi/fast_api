@@ -23,11 +23,15 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v7.1.0
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/fastApi:${{ github.sha }}
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/fast_api:${{ github.sha }} .
 
+      - name: Push Docker image with version tag
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/fast_api:${{ github.sha }}
+        
+      - name: Print pushed image version
+        run: |
+          echo "==========================================="
+          echo "Docker image successfully pushed:"
+          echo "  ${{ secrets.DOCKER_USERNAME }}/fast_api:${{ github.sha }}"
+          echo "==========================================="
