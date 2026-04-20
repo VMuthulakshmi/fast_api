@@ -37,7 +37,7 @@ jobs:
           echo "==========================================="
       
       - name: Checkout deploy repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
         with:
           repository: VMuthulakshmi/fast_api_deploy
           token: ${{ secrets.GH_PAT }}
