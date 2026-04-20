@@ -56,7 +56,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           BRANCH="update-image-${{ github.sha }}"
           git checkout -b $BRANCH
-          git add fast_api_deployment.yaml
+          git add deployment.yaml
           git commit -m "chore: update Fast API service image to ${{ github.sha }}"
           git push origin $BRANCH
           gh pr create \
