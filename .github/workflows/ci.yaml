@@ -45,7 +45,7 @@ jobs:
 
       - name: Update image tag in deployment.yaml
         run: |
-          sed -i "s|\(image: .*/fast_api:\).*|\1${{ github.sha }}|" fast_api_deploy/fast_api_deployment.yaml
+          sed -i "s|\(image: .*/fast_api:\).*|\1${{ github.sha }}|" fast_api_deploy/deployment.yaml
 
       - name: Raise PR to deploy repository
         env:
