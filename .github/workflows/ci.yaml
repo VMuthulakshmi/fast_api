@@ -41,7 +41,7 @@ jobs:
         with:
           repository: VMuthulakshmi/fast_api_deploy
           token: ${{ secrets.GH_PAT }}
-          path: deploy-repo
+          path: fast_api_deploy
 
       - name: Update image tag in deployment.yaml
         run: |
