@@ -1,15 +1,37 @@
 from fastapi import FastAPI, HTTPException, Request
 import logging
+import json
 
-# Create logger
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
 
-logger = logging.getLogger(__name__)
+class JsonFormatter(logging.Formatter):
+    def format(self, record):
+        log_record = {
+            "level": record.levelname,
+            "message": record.getMessage(),
+            "time": self.formatTime(record),
+        }
+        return json.dumps(log_record)
+
+
+logger = logging.getLogger("app")
+
+handler = logging.StreamHandler()
+handler.setFormatter(JsonFormatter())
+
+logger.setLevel(logging.INFO)
+logger.addHandler(handler)
+
 
 app = FastAPI()
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    logger.info(f"Request: {request.method} {request.url}")
+    
+    response = await call_next(request)
+    
+    logger.info(f"Response: {response.status_code}")
+    return response
 
 
 @app.get("/")
