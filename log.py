@@ -6,7 +6,7 @@ from typing import Any
 
 import logging_loki
 
-LOKI_URL = "http://loki:3100/loki/api/v1/push"
+LOKI_URL = "http://loki-gateway.loki.svc.cluster.local/loki/api/v1/push"
 
 
 def service_context(service_name: str, **extra: Any):
