@@ -44,9 +44,15 @@ app = FastAPI()
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
-    logger_service1.info(f"Request: {request.method} {request.url}")
+    # Choose logger based on path
+    if request.url.path.startswith("/welcome") or request.url.path.startswith("/error"):
+        logger = logger_service2
+    else:
+        logger = logger_service1
+
+    logger.info(f"Request: {request.method} {request.url}")
     response = await call_next(request)
-    logger_service1.info(f"Response: {response.status_code}")
+    logger.info(f"Response: {response.status_code}")
     return response
 
 @app.get("/")
