@@ -63,6 +63,13 @@ async def log_requests(request: Request, call_next):
     return response
 
 
+@app.get("/")
+async def root():
+    user_logger.info(
+        "root_accessed",
+        extra=service_context(SERVICE_1),
+    )
+    return {"message": "Hello from FastAPI with Loki and Prometheus!"}
 # -----------------------------
 # Service 1 → User Service
 # -----------------------------
